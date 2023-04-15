@@ -8,7 +8,7 @@ class UserModel extends UserEntity {
   final String? bio;
   final String? website;
   final String? email;
-  final String? profileImageUrl;
+  final String? profileUrl;
   final List? followers;
   final List? following;
   final num? totalFollowers;
@@ -22,7 +22,7 @@ class UserModel extends UserEntity {
       this.bio,
       this.website,
       this.email,
-      this.profileImageUrl,
+      this.profileUrl,
       this.followers,
       this.following,
       this.totalFollowers,
@@ -35,7 +35,7 @@ class UserModel extends UserEntity {
           bio: bio,
           website: website,
           email: email,
-          profileImageUrl: profileImageUrl,
+          profileUrl: profileUrl,
           followers: followers,
           following: following,
           totalFollowers: totalFollowers,
@@ -53,7 +53,7 @@ class UserModel extends UserEntity {
         bio: snapshot['bio'],
         website: snapshot['website'],
         email: snapshot['email'],
-        profileImageUrl: snapshot['profileImageUrl'],
+        profileUrl: snapshot['profileUrl'],
         followers: List.from(snap.get('followers')),
         following: List.from(snap.get('following')),
         totalFollowers: snapshot['totalFollowers'],
@@ -69,7 +69,7 @@ class UserModel extends UserEntity {
       'bio': bio,
       'website': website,
       'email': email,
-      'profileImageUrl': profileImageUrl,
+      'profileUrl': profileUrl,
       'followers': followers,
       'following': following,
       'totalFollowers': totalFollowers,

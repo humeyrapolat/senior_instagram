@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:senior_instagram/features/domain/entities/user_entity/user_entity.dart';
+import 'package:senior_instagram/features/presentation/cubit/auth/cubit/auth_cubit.dart';
+import 'package:senior_instagram/profile_widget.dart';
 import 'package:senior_instagram/util/consts.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({super.key});
+  final UserEntity currentUser;
+  const ProfilePage({super.key, required this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +16,9 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: backgGroundColor,
         elevation: 0,
-        title: const Text(
-          'Profile',
-          style: TextStyle(
+        title: Text(
+          '${currentUser.username}',
+          style: const TextStyle(
             color: primaryColor,
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -24,7 +29,7 @@ class ProfilePage extends StatelessWidget {
             padding: const EdgeInsets.only(right: 10),
             child: InkWell(
               onTap: () {
-                _openModalBottomSheet(context);
+                _openBottomModalSheet(context);
               },
               child: const Icon(
                 Icons.menu,
@@ -43,16 +48,12 @@ class ProfilePage extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
-                    child: Container(
-                      height: 75,
-                      width: 75,
-                      decoration: const BoxDecoration(
-                        color: primaryColor,
-                        shape: BoxShape.circle,
-                      ),
+                  Container(
+                    height: 80,
+                    width: 80,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(40),
+                      child: profileWidget(imageUrl: currentUser.profileUrl),
                     ),
                   ),
                   Row(
@@ -60,9 +61,9 @@ class ProfilePage extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          const Text(
-                            '0',
-                            style: TextStyle(
+                          Text(
+                            '${currentUser.totalPosts}',
+                            style: const TextStyle(
                               color: primaryColor,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -82,9 +83,9 @@ class ProfilePage extends StatelessWidget {
                       sizeHorizontal(25),
                       Column(
                         children: [
-                          const Text(
-                            '0',
-                            style: TextStyle(
+                          Text(
+                            '${currentUser.totalFollowers}',
+                            style: const TextStyle(
                               color: primaryColor,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -104,9 +105,9 @@ class ProfilePage extends StatelessWidget {
                       sizeHorizontal(25),
                       Column(
                         children: [
-                          const Text(
-                            '0',
-                            style: TextStyle(
+                          Text(
+                            '${currentUser.totalFollowing}',
+                            style: const TextStyle(
                               color: primaryColor,
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -128,17 +129,17 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
               sizeVertical(1),
-              const Text(
-                'Username',
-                style: TextStyle(
+              Text(
+                '${currentUser.name == "" ? currentUser.username : currentUser.name}',
+                style: const TextStyle(
                   color: primaryColor,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               sizeVertical(8),
-              const Text(
-                'Full Name',
-                style: TextStyle(
+              Text(
+                '${currentUser.bio}',
+                style: const TextStyle(
                   color: secondaryColor,
                   fontWeight: FontWeight.bold,
                 ),
@@ -165,97 +166,90 @@ class ProfilePage extends StatelessWidget {
       ),
     );
   }
-}
 
-_openModalBottomSheet(BuildContext context) {
-  return showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: 150,
-          decoration: BoxDecoration(
-            color: backgGroundColor.withOpacity(0.8),
-          ),
-          child: SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.symmetric(
-                vertical: 10,
-              ),
-              child: Column(
+  _openBottomModalSheet(BuildContext context) {
+    return showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 150,
+            decoration: BoxDecoration(color: backgGroundColor.withOpacity(.8)),
+            child: SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(left: 10),
+                      padding: EdgeInsets.only(left: 10.0),
                       child: Text(
                         "More Options",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
-                            color: primaryColor),
+                            color: pinkColor),
                       ),
                     ),
-                    sizeVertical(10),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     const Divider(
                       thickness: 1,
-                      color: secondaryColor,
+                      color: primaryColor,
                     ),
                     const SizedBox(
                       height: 8,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: 10),
+                      padding: const EdgeInsets.only(left: 10.0),
                       child: GestureDetector(
                         onTap: () {
                           Navigator.pushNamed(
-                              context, PageConsts.editProfilePage);
+                                  context, PageConsts.editProfilePage,
+                                  arguments: currentUser)
+                              .whenComplete(() {
+                            Navigator.pop(context);
+                          });
+                          // Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage()));
                         },
                         child: const Text(
-                          "Edit Profile ",
+                          "Edit Profile",
                           style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
-                              color: primaryColor),
+                              color: pinkColor),
                         ),
                       ),
                     ),
                     sizeVertical(7),
                     const Divider(
                       thickness: 1,
-                      color: secondaryColor,
+                      color: darkGreyColor,
                     ),
                     sizeVertical(7),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        "Logout",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            color: primaryColor),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10.0),
+                      child: InkWell(
+                        onTap: () {
+                          BlocProvider.of<AuthCubit>(context).loggedOut();
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, PageConsts.signInPage, (route) => false);
+                        },
+                        child: const Text(
+                          "Logout",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: pinkColor),
+                        ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
                     sizeVertical(7),
-                    const Divider(
-                      thickness: 1,
-                      color: secondaryColor,
-                    ),
-                    sizeVertical(7),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        "Logout",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                            color: primaryColor),
-                      ),
-                    )
-                  ]),
+                  ],
+                ),
+              ),
             ),
-          ),
-        );
-      });
+          );
+        });
+  }
 }

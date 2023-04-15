@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // we you multi bloc provider to provide multiple cubit when our app starts.
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthCubit>(

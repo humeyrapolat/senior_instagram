@@ -9,6 +9,11 @@ import 'package:senior_instagram/features/domain/usecases/firebase_usecases/user
 part 'credential_state.dart';
 
 class CredentialCubit extends Cubit<CredentialState> {
+  ///In our app we will use registerLazySingleton to register our Cubit’s
+  ///dependencies which are Use Cases. These lazy singletons will create
+  ///only one instance and will use it throughout lifetime of the app. These
+  ///registrations will go down below the Use Cases comment.
+
   final SignInUserUsecase signInUserUsecase;
   final SignUpUserUsecase signUpUserUsecase;
 
@@ -30,7 +35,7 @@ class CredentialCubit extends Cubit<CredentialState> {
     }
   }
 
-  Future<void> signUpUser(UserEntity user) async {
+  Future<void> signUpUser({required UserEntity user}) async {
     emit(CredentialLoading());
     try {
       await signUpUserUsecase.call(user);
