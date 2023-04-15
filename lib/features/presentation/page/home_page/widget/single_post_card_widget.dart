@@ -3,9 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:intl/intl.dart';
 import 'package:senior_instagram/features/domain/entities/post/post_entity.dart';
+import 'package:senior_instagram/features/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
 import 'package:senior_instagram/features/presentation/cubit/post/post_cubit.dart';
+import 'package:senior_instagram/features/presentation/page/post/widget/like_animation_widget.dart';
 import 'package:senior_instagram/profile_widget.dart';
 import 'package:senior_instagram/util/consts.dart';
+import 'package:senior_instagram/injection_container.dart' as di;
 
 class SinglePagePostCardWidget extends StatefulWidget {
   final PostEntity post;
@@ -17,6 +20,19 @@ class SinglePagePostCardWidget extends StatefulWidget {
 }
 
 class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
+  bool _isLikeAnimating = false;
+  String _currentUUid = " ";
+
+  @override
+  void initState() {
+    di.sl<GetCurrentUidUseCase>().call().then((value) {
+      setState(() {
+        _currentUUid = value;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -29,7 +45,7 @@ class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
             children: [
               Row(
                 children: [
-                  Container(
+                  SizedBox(
                     width: 30,
                     height: 30,
                     child: ClipRRect(
@@ -57,11 +73,40 @@ class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
             ],
           ),
           sizeVertical(10),
-          Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height *
-                0.30, // 30% of screen height
-            child: profileWidget(imageUrl: widget.post.postImageUrl!),
+          GestureDetector(
+            onDoubleTap: () {
+              _likePost();
+              setState(() {
+                _isLikeAnimating = true;
+              });
+            },
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.30,
+                  child: profileWidget(imageUrl: "${widget.post.postImageUrl}"),
+                ),
+                AnimatedOpacity(
+                  duration: const Duration(milliseconds: 200),
+                  opacity: _isLikeAnimating ? 1 : 0,
+                  child: LikeAnimationWidget(
+                      duration: const Duration(milliseconds: 200),
+                      isLikeAnimating: _isLikeAnimating,
+                      onLikeFinish: () {
+                        setState(() {
+                          _isLikeAnimating = false;
+                        });
+                      },
+                      child: const Icon(
+                        Icons.favorite,
+                        size: 100,
+                        color: Colors.white,
+                      )),
+                ),
+              ],
+            ),
           ),
           sizeVertical(10),
           Row(
@@ -69,9 +114,13 @@ class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
             children: [
               Row(
                 children: [
-                  const Icon(
-                    Icons.favorite_border,
-                    color: primaryColor,
+                  Icon(
+                    widget.post.likes!.contains(_currentUUid)
+                        ? Icons.favorite
+                        : Icons.favorite_outline,
+                    color: widget.post.likes!.contains(_currentUUid)
+                        ? Colors.red
+                        : secondaryColor,
                   ),
                   sizeHorizontal(10),
                   GestureDetector(
@@ -238,5 +287,10 @@ class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
     BlocProvider.of<PostCubit>(context)
         .deletePost(post: PostEntity(postId: widget.post.postId))
         .whenComplete(() => Navigator.pop(context));
+  }
+
+  _likePost() {
+    BlocProvider.of<PostCubit>(context)
+        .likePost(post: PostEntity(postId: widget.post.postId));
   }
 }

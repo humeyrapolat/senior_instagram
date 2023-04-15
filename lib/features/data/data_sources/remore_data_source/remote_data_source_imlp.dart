@@ -274,24 +274,21 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final postCollection = firestore.collection(FirebaseConsts.post);
 
     final currentUid = await getCurrentUid();
-
     final postRef = await postCollection.doc(post.postId).get();
 
-    if (!postRef.exists) {
+    if (postRef.exists) {
       List likes = postRef.get("likes");
       final totalLikes = postRef.get("totalLikes");
       if (likes.contains(currentUid)) {
         postCollection.doc(post.postId).update({
           "likes": FieldValue.arrayRemove([currentUid]),
-          "totalLikes": totalLikes - 1,
+          "totalLikes": totalLikes - 1
         });
       } else {
-        postCollection.doc(post.postId).update(
-          {
-            "likes": FieldValue.arrayUnion([currentUid]),
-            "totalLikes": totalLikes + 1,
-          },
-        );
+        postCollection.doc(post.postId).update({
+          "likes": FieldValue.arrayUnion([currentUid]),
+          "totalLikes": totalLikes + 1
+        });
       }
     }
   }
