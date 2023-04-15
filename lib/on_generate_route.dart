@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:senior_instagram/features/domain/entities/post/post_entity.dart';
 import 'package:senior_instagram/features/domain/entities/user_entity/user_entity.dart';
 import 'package:senior_instagram/features/presentation/page/credential/sign_in.dart';
 import 'package:senior_instagram/features/presentation/page/credential/sign_up.dart';
 import 'package:senior_instagram/features/presentation/page/post/comment/comment_page.dart';
 import 'package:senior_instagram/features/presentation/page/post/post.dart';
+import 'package:senior_instagram/features/presentation/page/post/update_post_page.dart';
 import 'package:senior_instagram/features/presentation/page/profile/edit_profile_page.dart';
 import 'package:senior_instagram/util/consts.dart';
 
@@ -26,10 +28,31 @@ class OnGenerateRoute {
         }
       case PageConsts.postPage:
         {
-          return routeBuilder(
-            const PostPage(),
-          );
+          if (args is UserEntity) {
+            return routeBuilder(
+              UploadPostPage(currentUser: args),
+            );
+          } else {
+            return routeBuilder(
+              const NoPageFound(),
+            );
+          }
         }
+      case PageConsts.updatePostPage:
+        {
+          if (args is PostEntity) {
+            return routeBuilder(
+              UpdatePostPage(
+                post: args,
+              ),
+            );
+          } else {
+            return routeBuilder(
+              const NoPageFound(),
+            );
+          }
+        }
+
       case PageConsts.signInPage:
         {
           return routeBuilder(

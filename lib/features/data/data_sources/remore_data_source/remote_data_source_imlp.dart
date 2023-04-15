@@ -310,13 +310,12 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final postCollection = firestore.collection(FirebaseConsts.post);
     Map<String, dynamic> postInfo = Map();
 
-    if (post.description == "" && post.description != null) {
-      postInfo["description"] = post.description;
+    if (post.description != "" && post.description != null) {
+      postInfo['description'] = post.description;
     }
-    if (post.postImageUrl == "" && post.postImageUrl != null) {
-      postInfo["postImageUrl"] = post.postImageUrl;
+    if (post.postImageUrl != "" && post.postImageUrl != null) {
+      postInfo['postImageUrl'] = post.postImageUrl;
     }
-
     postCollection.doc(post.postId).update(postInfo);
   }
 }

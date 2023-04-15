@@ -21,6 +21,7 @@ class PageConsts {
   static const String editProfilePage = "editProfilePage";
   static const String noPageFound = "noPageFound";
   static const String postPage = "postPage";
+  static const String updatePostPage = "updatePostPage";
   static const String searchPage = "searchPage";
   static const String homePage = "homePage";
   static const String activityPage = "activityPage";

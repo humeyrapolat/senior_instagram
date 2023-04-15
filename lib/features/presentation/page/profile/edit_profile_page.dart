@@ -155,7 +155,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _updateUserProfile("");
     } else {
       di
-          .locator<UploadImageToStorageUseCase>()
+          .sl<UploadImageToStorageUseCase>()
           .call(_image!, false, "profileImages")
           .then((profileUrl) {
         _updateUserProfile(profileUrl);

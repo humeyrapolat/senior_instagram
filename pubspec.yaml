@@ -39,7 +39,7 @@ dependencies:
   equatable: ^2.0.3
   flutter_icons_null_safety: ^1.1.0
   #Firebase
-  cloud_firestore: ^4.4.5
+  cloud_firestore: ^4.5.1
   firebase_storage: ^11.0.16
   firebase_auth: ^4.2.2
   firebase_core: ^2.8.0

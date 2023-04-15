@@ -26,16 +26,16 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AuthCubit>(
-          create: (context) => di.locator<AuthCubit>()..appStarted(context),
+          create: (context) => di.sl<AuthCubit>()..appStarted(context),
         ),
         BlocProvider<UserCubit>(
-          create: (context) => di.locator<UserCubit>(),
+          create: (context) => di.sl<UserCubit>(),
         ),
         BlocProvider<CredentialCubit>(
-          create: (context) => di.locator<CredentialCubit>(),
+          create: (context) => di.sl<CredentialCubit>(),
         ),
         BlocProvider<GetSingleUserCubit>(
-          create: (context) => di.locator<GetSingleUserCubit>(),
+          create: (context) => di.sl<GetSingleUserCubit>(),
         ),
       ],
       child: MaterialApp(
