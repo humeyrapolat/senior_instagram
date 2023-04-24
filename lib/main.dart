@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:senior_instagram/features/presentation/cubit/auth/cubit/auth_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/credential/cubit/credential_cubit.dart';
+import 'package:senior_instagram/features/presentation/cubit/post/post_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/user/cubit/user_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/user/get_single_user/cubit/get_single_user_cubit.dart';
 import 'package:senior_instagram/features/presentation/page/credential/sign_in.dart';
@@ -36,6 +37,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<GetSingleUserCubit>(
           create: (context) => di.sl<GetSingleUserCubit>(),
+        ),
+        BlocProvider<PostCubit>(
+          create: (context) => di.sl<PostCubit>(),
         ),
       ],
       child: MaterialApp(

@@ -114,13 +114,16 @@ class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
             children: [
               Row(
                 children: [
-                  Icon(
-                    widget.post.likes!.contains(_currentUUid)
-                        ? Icons.favorite
-                        : Icons.favorite_outline,
-                    color: widget.post.likes!.contains(_currentUUid)
-                        ? Colors.red
-                        : secondaryColor,
+                  GestureDetector(
+                    onTap: _likePost,
+                    child: Icon(
+                      widget.post.likes!.contains(_currentUUid)
+                          ? Icons.favorite
+                          : Icons.favorite_outline,
+                      color: widget.post.likes!.contains(_currentUUid)
+                          ? Colors.red
+                          : primaryColor,
+                    ),
                   ),
                   sizeHorizontal(10),
                   GestureDetector(
