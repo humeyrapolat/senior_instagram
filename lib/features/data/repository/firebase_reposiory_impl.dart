@@ -91,8 +91,6 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   }
 
   @override
-  Stream<List<CommentEntity>> readComment(String postId) {
-    // TODO: implement readComment
-    throw UnimplementedError();
-  }
+  Stream<List<CommentEntity>> readComment(String postId) =>
+      remoteDataSource.readComment(postId);
 }

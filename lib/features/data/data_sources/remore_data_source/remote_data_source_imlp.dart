@@ -376,14 +376,14 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
 
         postCollection.get().then((value) {
           if (value.exists) {
-            final totalComments = value.get("totalComments");
+            final totalComments = value.get('totalComments');
             postCollection.update({"totalComments": totalComments - 1});
             return;
           }
         });
       });
     } catch (e) {
-      toast("some error occured $e ");
+      print("some error occured $e");
     }
   }
 
@@ -393,19 +393,19 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         .collection(FirebaseConsts.post)
         .doc(comment.postId)
         .collection(FirebaseConsts.comments);
-
     final currentUid = await getCurrentUid();
+
     final commentRef = await commentCollection.doc(comment.commentId).get();
 
     if (commentRef.exists) {
       List likes = commentRef.get("likes");
       if (likes.contains(currentUid)) {
         commentCollection.doc(comment.commentId).update({
-          "likes": FieldValue.arrayRemove([likes]),
+          "likes": FieldValue.arrayRemove([currentUid])
         });
       } else {
         commentCollection.doc(comment.commentId).update({
-          "likes": FieldValue.arrayUnion([likes]),
+          "likes": FieldValue.arrayUnion([currentUid])
         });
       }
     }
@@ -416,8 +416,8 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
     final commentCollection = firestore
         .collection(FirebaseConsts.post)
         .doc(postId)
-        .collection(FirebaseConsts.comments);
-
+        .collection(FirebaseConsts.comments)
+        .orderBy("createAt", descending: true);
     return commentCollection.snapshots().map((querySnapshot) =>
         querySnapshot.docs.map((e) => CommentModel.fromSnapshot(e)).toList());
   }
@@ -429,11 +429,10 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
         .doc(comment.postId)
         .collection(FirebaseConsts.comments);
 
-    Map<String, dynamic> commentInfo = {};
+    Map<String, dynamic> commentInfo = Map();
 
-    if (comment.description != "" && comment.description != null) {
-      commentInfo['description'] = comment.description;
-    }
+    if (comment.description != "" && comment.description != null)
+      commentInfo["description"] = comment.description;
 
     commentCollection.doc(comment.commentId).update(commentInfo);
   }

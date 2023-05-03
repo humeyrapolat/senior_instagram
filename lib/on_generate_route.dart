@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:senior_instagram/features/domain/entities/app_entity.dart';
 import 'package:senior_instagram/features/domain/entities/post/post_entity.dart';
 import 'package:senior_instagram/features/domain/entities/user_entity/user_entity.dart';
 import 'package:senior_instagram/features/presentation/page/credential/sign_in.dart';
@@ -67,8 +68,15 @@ class OnGenerateRoute {
         }
       case PageConsts.commentPage:
         {
+          if (args is AppEntity) {
+            return routeBuilder(
+              CommentPage(
+                appEntity: args,
+              ),
+            );
+          }
           return routeBuilder(
-            const CommentPage(),
+            const NoPageFound(),
           );
         }
       default:

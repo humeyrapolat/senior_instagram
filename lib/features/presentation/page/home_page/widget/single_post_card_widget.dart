@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_icons_null_safety/flutter_icons_null_safety.dart';
 import 'package:intl/intl.dart';
+import 'package:senior_instagram/features/domain/entities/app_entity.dart';
 import 'package:senior_instagram/features/domain/entities/post/post_entity.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
 import 'package:senior_instagram/features/presentation/cubit/post/post_cubit.dart';
@@ -50,10 +51,8 @@ class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
                     height: 30,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(15),
-                      child: Image.network(
-                        widget.post.userProfileUrl!,
-                        fit: BoxFit.cover,
-                      ),
+                      child: profileWidget(
+                          imageUrl: "${widget.post.userProfileUrl}"),
                     ),
                   ),
                   sizeHorizontal(10),
@@ -128,7 +127,11 @@ class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
                   sizeHorizontal(10),
                   GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, PageConsts.commentPage);
+                      Navigator.pushNamed(context, PageConsts.commentPage,
+                          arguments: AppEntity(
+                            uid: _currentUUid,
+                            postId: widget.post.postId,
+                          ));
                     },
                     child: const Icon(
                       Feather.message_circle,
@@ -171,15 +174,24 @@ class _SinglePagePostCardWidgetState extends State<SinglePagePostCardWidget> {
             ],
           ),
           sizeVertical(10),
-          Text(
-            widget.post.totalComments == 0
-                ? "No Comments"
-                : "View all comments",
-            style: const TextStyle(color: secondaryColor),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, PageConsts.commentPage,
+                  arguments: AppEntity(
+                    uid: _currentUUid,
+                    postId: widget.post.postId,
+                  ));
+            },
+            child: Text(
+              widget.post.totalComments == 0
+                  ? "No Comments"
+                  : "View all ${widget.post.totalComments} comments",
+              style: const TextStyle(color: secondaryColor),
+            ),
           ),
           sizeVertical(10),
           Text(
-            "${DateFormat('dd MMM yyyy').format(widget.post.createAt!.toDate())}",
+            DateFormat('dd MMM yyyy').format(widget.post.createAt!.toDate()),
             style: const TextStyle(color: secondaryColor),
           ),
         ],
