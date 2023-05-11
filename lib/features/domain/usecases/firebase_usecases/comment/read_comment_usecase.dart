@@ -6,6 +6,6 @@ class ReadCommentsUseCase {
   ReadCommentsUseCase({required this.repository});
 
   Stream<List<CommentEntity>> call(String postId) {
-    return repository.readComment(postId);
+    return repository.readComments(postId);
   }
 }

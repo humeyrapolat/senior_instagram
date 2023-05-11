@@ -8,6 +8,7 @@ import 'package:senior_instagram/features/data/models/post/post_model.dart';
 import 'package:senior_instagram/features/data/models/user/user_model.dart';
 import 'package:senior_instagram/features/domain/entities/comment/comment_entity.dart';
 import 'package:senior_instagram/features/domain/entities/post/post_entity.dart';
+import 'package:senior_instagram/features/domain/entities/replay/replay_entity.dart';
 import 'package:senior_instagram/features/domain/entities/user_entity/user_entity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:senior_instagram/util/consts.dart';
@@ -445,5 +446,35 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
       commentInfo["description"] = comment.description;
 
     commentCollection.doc(comment.commentId).update(commentInfo);
+  }
+
+  @override
+  Future<void> createReplay(ReplayEntity replay) {
+    // TODO: implement createReplay
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteReplay(ReplayEntity replay) {
+    // TODO: implement deleteReplay
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> likeReplay(ReplayEntity replay) {
+    // TODO: implement likeReplay
+    throw UnimplementedError();
+  }
+
+  @override
+  Stream<List<ReplayEntity>> readReplays(ReplayEntity replay) {
+    // TODO: implement readReplays
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateReplay(ReplayEntity replay) {
+    // TODO: implement updateReplay
+    throw UnimplementedError();
   }
 }
