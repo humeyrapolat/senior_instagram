@@ -305,6 +305,16 @@ class FirebaseRemoteDataSourceImpl implements FirebaseRemoteDataSource {
   }
 
   @override
+  Stream<List<PostEntity>> readSinglePost(String postId) {
+    final postCollection = firestore
+        .collection(FirebaseConsts.post)
+        .orderBy("createAt", descending: true)
+        .where("postId", isEqualTo: postId);
+    return postCollection.snapshots().map((querySnapshot) =>
+        querySnapshot.docs.map((e) => PostModel.fromSnapshot(e)).toList());
+  }
+
+  @override
   Future<void> updatePost(PostEntity post) async {
     final postCollection = firestore.collection(FirebaseConsts.post);
     Map<String, dynamic> postInfo = Map();

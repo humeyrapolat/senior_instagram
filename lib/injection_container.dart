@@ -15,6 +15,7 @@ import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post/delete_post_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post/like_post_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post/read_post_usecase.dart';
+import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post/read_single_post_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post/update_post_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/storage/upload_image_to_storage_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/user/create_user_usecase.dart';
@@ -29,6 +30,7 @@ import 'package:senior_instagram/features/domain/usecases/firebase_usecases/user
 import 'package:senior_instagram/features/presentation/cubit/auth/cubit/auth_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/comment/comment_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/credential/cubit/credential_cubit.dart';
+import 'package:senior_instagram/features/presentation/cubit/post/get_single_post_cubit/get_single_post_cubit_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/post/post_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/user/cubit/user_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/user/get_single_user/cubit/get_single_user_cubit.dart';
@@ -87,6 +89,9 @@ Future<void> init() async {
       deletePostUseCase: sl.call(),
       likePostUseCase: sl.call()));
 
+  sl.registerFactory(
+      () => GetSinglePostCubit(readSinglePostUseCase: sl.call()));
+
   //comment cubit injection
 
   sl.registerFactory(() => CommentCubit(
@@ -128,6 +133,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LikePostUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => ReadPostUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => UpdatePostUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => ReadSinglePostUseCase(repository: sl.call()));
 
   //Comment Usecase
   sl.registerLazySingleton(() => CreateCommentUseCase(repository: sl.call()));

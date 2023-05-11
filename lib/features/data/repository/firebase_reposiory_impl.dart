@@ -93,4 +93,8 @@ class FirebaseRepositoryImpl implements FirebaseRepository {
   @override
   Stream<List<CommentEntity>> readComment(String postId) =>
       remoteDataSource.readComment(postId);
+
+  @override
+  Stream<List<PostEntity>> readSinglePost(String postId) =>
+      remoteDataSource.readSinglePost(postId);
 }

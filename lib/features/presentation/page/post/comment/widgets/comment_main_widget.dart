@@ -5,6 +5,7 @@ import 'package:senior_instagram/features/domain/entities/app_entity.dart';
 import 'package:senior_instagram/features/domain/entities/comment/comment_entity.dart';
 import 'package:senior_instagram/features/domain/entities/user_entity/user_entity.dart';
 import 'package:senior_instagram/features/presentation/cubit/comment/comment_cubit.dart';
+import 'package:senior_instagram/features/presentation/cubit/post/get_single_post_cubit/get_single_post_cubit_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/user/get_single_user/cubit/get_single_user_cubit.dart';
 import 'package:senior_instagram/features/presentation/page/post/comment/widgets/single_comment_widget.dart';
 import 'package:senior_instagram/profile_widget.dart';
@@ -34,6 +35,9 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
     BlocProvider.of<GetSingleUserCubit>(context)
         .getSingleUser(uid: widget.appEntity.uid!);
 
+    BlocProvider.of<GetSinglePostCubit>(context)
+        .getSinglePost(postId: widget.appEntity.postId!);
+
     BlocProvider.of<CommentCubit>(context)
         .getComments(postId: widget.appEntity.postId!);
 
@@ -55,85 +59,102 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
         builder: (context, singleUserState) {
           if (singleUserState is GetSingleUserLoaded) {
             final singleUser = singleUserState.user;
-            return BlocBuilder<CommentCubit, CommentState>(
-                builder: (context, commentState) {
-              if (commentState is CommentLoaded) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 10),
-                      child: Column(
+            return BlocBuilder<GetSinglePostCubit, GetSinglePostState>(
+              builder: (context, singlePostState) {
+                if (singlePostState is GetSinglePostCubitLoaded) {
+                  final singlePost = singlePostState.post;
+                  return BlocBuilder<CommentCubit, CommentState>(
+                      builder: (context, commentState) {
+                    if (commentState is CommentLoaded) {
+                      return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: secondaryColor),
-                              ),
-                              sizeHorizontal(10),
-                              const Text(
-                                "Username",
-                                style: TextStyle(
-                                    color: primaryColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(20),
+                                          child: profileWidget(
+                                              imageUrl:
+                                                  singlePost.userProfileUrl!)),
+                                    ),
+                                    sizeHorizontal(10),
+                                    Text(
+                                      "  ${singlePost.username}",
+                                      style: const TextStyle(
+                                          color: primaryColor,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
+                          sizeVertical(10),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              "${singlePost.description}",
+                              style: const TextStyle(
+                                  color: primaryColor,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400),
+                            ),
+                          ),
+                          sizeVertical(10),
+                          const Divider(
+                            color: secondaryColor,
+                          ),
+                          sizeVertical(10),
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: commentState.comments.length,
+                              itemBuilder: ((context, index) {
+                                final singleComment =
+                                    commentState.comments[index];
+                                return SingleCommentWidget(
+                                  comment: singleComment,
+                                  onLikePressListner: () {
+                                    _likeComment(
+                                        comment: commentState.comments[index]);
+                                  },
+                                  onLongPressListner: () {
+                                    _openModalBottomSheet(
+                                        context: context,
+                                        comment: singleComment);
+                                  },
+                                );
+                              }),
+                            ),
+                          ),
+                          _commentSection(currentUser: singleUser),
                         ],
+                      );
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(
+                        color: pinkColor,
                       ),
-                    ),
-                    sizeVertical(10),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt lacinia, nunc nisl aliquam nunc, eget aliquam nunc nisl eu nunc. Sed euismod, nunc vel tincidunt lacinia, nunc nisl aliquam nunc, eget aliquam nunc nisl eu nunc.",
-                        style: TextStyle(
-                            color: primaryColor,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w400),
-                      ),
-                    ),
-                    sizeVertical(10),
-                    const Divider(
-                      color: secondaryColor,
-                    ),
-                    sizeVertical(10),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: commentState.comments.length,
-                        itemBuilder: ((context, index) {
-                          final singleComment = commentState.comments[index];
-                          return SingleCommentWidget(
-                            comment: singleComment,
-                            onLikePressListner: () {
-                              _likeComment(
-                                  comment: commentState.comments[index]);
-                            },
-                            onLongPressListner: () {
-                              _openModalBottomSheet(
-                                  context: context, comment: singleComment);
-                            },
-                          );
-                        }),
-                      ),
-                    ),
-                    _commentSection(currentUser: singleUser),
-                  ],
+                    );
+                  });
+                }
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: pinkColor,
+                  ),
                 );
-              }
-              return const Center(
-                child: CircularProgressIndicator(
-                  color: pinkColor,
-                ),
-              );
-            });
+              },
+            );
           }
           return const Center(
             child: CircularProgressIndicator(
@@ -207,7 +228,11 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
                       Padding(
                         padding: const EdgeInsets.only(left: 10),
                         child: GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, PageConsts.updateCommentPage,
+                                arguments: comment);
+                          },
                           child: const Text(
                             "Update Comment ",
                             style: TextStyle(

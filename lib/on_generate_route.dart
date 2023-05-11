@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:senior_instagram/features/domain/entities/app_entity.dart';
+import 'package:senior_instagram/features/domain/entities/comment/comment_entity.dart';
 import 'package:senior_instagram/features/domain/entities/post/post_entity.dart';
 import 'package:senior_instagram/features/domain/entities/user_entity/user_entity.dart';
 import 'package:senior_instagram/features/presentation/page/credential/sign_in.dart';
 import 'package:senior_instagram/features/presentation/page/credential/sign_up.dart';
 import 'package:senior_instagram/features/presentation/page/post/comment/comment_page.dart';
+import 'package:senior_instagram/features/presentation/page/post/comment/edit_comment_page.dart';
 import 'package:senior_instagram/features/presentation/page/post/post.dart';
 import 'package:senior_instagram/features/presentation/page/post/update_post_page.dart';
 import 'package:senior_instagram/features/presentation/page/profile/edit_profile_page.dart';
@@ -72,6 +74,19 @@ class OnGenerateRoute {
             return routeBuilder(
               CommentPage(
                 appEntity: args,
+              ),
+            );
+          }
+          return routeBuilder(
+            const NoPageFound(),
+          );
+        }
+      case PageConsts.updateCommentPage:
+        {
+          if (args is CommentEntity) {
+            return routeBuilder(
+              EditCommentPage(
+                comment: args,
               ),
             );
           }
