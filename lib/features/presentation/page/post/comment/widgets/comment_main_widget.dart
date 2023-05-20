@@ -6,11 +6,13 @@ import 'package:senior_instagram/features/domain/entities/comment/comment_entity
 import 'package:senior_instagram/features/domain/entities/user_entity/user_entity.dart';
 import 'package:senior_instagram/features/presentation/cubit/comment/comment_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/post/get_single_post_cubit/get_single_post_cubit_cubit.dart';
+import 'package:senior_instagram/features/presentation/cubit/replay/replay_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/user/get_single_user/cubit/get_single_user_cubit.dart';
 import 'package:senior_instagram/features/presentation/page/post/comment/widgets/single_comment_widget.dart';
 import 'package:senior_instagram/profile_widget.dart';
 import 'package:senior_instagram/util/consts.dart';
 import 'package:uuid/uuid.dart';
+import 'package:senior_instagram/injection_container.dart' as di;
 
 class CommentMainWidget extends StatefulWidget {
   final AppEntity appEntity;
@@ -122,17 +124,22 @@ class _CommentMainWidgetState extends State<CommentMainWidget> {
                               itemBuilder: ((context, index) {
                                 final singleComment =
                                     commentState.comments[index];
-                                return SingleCommentWidget(
-                                  comment: singleComment,
-                                  onLikePressListner: () {
-                                    _likeComment(
-                                        comment: commentState.comments[index]);
-                                  },
-                                  onLongPressListner: () {
-                                    _openModalBottomSheet(
-                                        context: context,
-                                        comment: singleComment);
-                                  },
+                                return BlocProvider(
+                                  create: (context) => di.sl<ReplayCubit>(),
+                                  child: SingleCommentWidget(
+                                    currentUser: singleUser,
+                                    comment: singleComment,
+                                    onLikePressListner: () {
+                                      _likeComment(
+                                          comment:
+                                              commentState.comments[index]);
+                                    },
+                                    onLongPressListner: () {
+                                      _openModalBottomSheet(
+                                          context: context,
+                                          comment: singleComment);
+                                    },
+                                  ),
                                 );
                               }),
                             ),

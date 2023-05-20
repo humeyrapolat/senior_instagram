@@ -17,6 +17,11 @@ import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post/read_post_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post/read_single_post_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/post/update_post_usecase.dart';
+import 'package:senior_instagram/features/domain/usecases/firebase_usecases/replay/create_replay_usecase.dart';
+import 'package:senior_instagram/features/domain/usecases/firebase_usecases/replay/delete_replay_usecase.dart';
+import 'package:senior_instagram/features/domain/usecases/firebase_usecases/replay/like_replay_usecase.dart';
+import 'package:senior_instagram/features/domain/usecases/firebase_usecases/replay/read_replay_usecase.dart';
+import 'package:senior_instagram/features/domain/usecases/firebase_usecases/replay/update_replay_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/storage/upload_image_to_storage_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/user/create_user_usecase.dart';
 import 'package:senior_instagram/features/domain/usecases/firebase_usecases/user/get_current_uid_usecase.dart';
@@ -32,9 +37,9 @@ import 'package:senior_instagram/features/presentation/cubit/comment/comment_cub
 import 'package:senior_instagram/features/presentation/cubit/credential/cubit/credential_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/post/get_single_post_cubit/get_single_post_cubit_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/post/post_cubit.dart';
+import 'package:senior_instagram/features/presentation/cubit/replay/replay_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/user/cubit/user_cubit.dart';
 import 'package:senior_instagram/features/presentation/cubit/user/get_single_user/cubit/get_single_user_cubit.dart';
-import 'package:senior_instagram/features/presentation/page/post/update_post_page.dart';
 
 /*
 
@@ -101,6 +106,15 @@ Future<void> init() async {
       deleteCommentUseCase: sl.call(),
       likeCommentUseCase: sl.call()));
 
+  //replay cubit injection
+
+  sl.registerFactory(() => ReplayCubit(
+      createReplayUseCase: sl.call(),
+      readReplaysUseCase: sl.call(),
+      updateReplayUseCase: sl.call(),
+      deleteReplayUseCase: sl.call(),
+      likeReplayUseCase: sl.call()));
+
   //Usecases
 
   ///In our app we will use registerLazySingleton to register our
@@ -141,6 +155,13 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateCommentUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => LikeCommentUseCase(repository: sl.call()));
   sl.registerLazySingleton(() => DeleteCommentUseCase(repository: sl.call()));
+
+  //Replay Usecase
+  sl.registerLazySingleton(() => CreateReplayUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => ReadReplaysUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => UpdateReplayUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => LikeReplayUseCase(repository: sl.call()));
+  sl.registerLazySingleton(() => DeleteReplayUseCase(repository: sl.call()));
 
   //Repository
 
